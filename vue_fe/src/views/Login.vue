@@ -2,85 +2,81 @@
   <div class="login-wrapper">
     <div class="login-modal">
       <div class="header">权限管理系统</div>
-      <el-form
-        ref="ruleFormRef"
-        :model="ruleForm"
-        status-icon
-        :rules="rules"
-        label-width="120px"
+      <a-form
+        :model="formState"
+        name="horizontal_login"
+        autocomplete="off"
+        @finish="onFinish"
       >
-        <el-form-item label-width="auto" label="用户名" prop="username">
-          <el-input
-            v-model="ruleForm.username"
-            autocomplete="off"
-            placeholder="用户名"
-            :prefix-icon="User"
-          />
-        </el-form-item>
-        <el-form-item label-width="auto" label="密码&#160;&#160;&#160;" prop="pwd">
-          <el-input
-            v-model="ruleForm.pwd"
-            type="password"
-            autocomplete="off"
-            placeholder="密码"
-            :prefix-icon="Lock"
-          />
-        </el-form-item>
-        <el-form-item label-width="auto">
-          <el-button type="primary" size="large" class="btn" @click="submit(ruleFormRef)">登录</el-button>
-        </el-form-item>
-      </el-form>
+        <a-form-item
+          label="用户名"
+          name="username"
+          :rules="[{ required: true, message: '请输入用户名!' }]"
+        >
+          <a-input v-model:value="formState.username">
+            <template #prefix>
+              <UserOutlined class="site-form-item-icon" />
+            </template>
+          </a-input>
+        </a-form-item>
+
+        <a-form-item
+          label="密码&#12288"
+          name="password"
+          :rules="[{ required: true, message: '请输入密码!' }]"
+        >
+          <a-input-password v-model:value="formState.password">
+            <template #prefix>
+              <LockOutlined class="site-form-item-icon" />
+            </template>
+          </a-input-password>
+        </a-form-item>
+
+        <a-form-item>
+          <a-button :disabled="disabled" type="primary" html-type="submit" class="btn">登录</a-button>
+        </a-form-item>
+      </a-form>
     </div>
   </div>
 </template>
 
-<script setup>
-import { inject, reactive, ref } from 'vue'
-import { Lock, User } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router';
+<script>
+import { defineComponent, reactive, computed, inject, ref } from "vue"
+import { UserOutlined, LockOutlined } from "@ant-design/icons-vue"
+import { useRouter } from "vue-router"
 
-const $api = inject('$api')
-const router = useRouter()
-const ruleFormRef = ref()
-const ruleForm = reactive({
-  username: '',
-  pwd: '',
-})
+export default defineComponent({
+  components: {
+    UserOutlined,
+    LockOutlined,
+  },
 
-const validatePwd = (rule, value, callback) => {
-  if (value === '') {
-    callback(new Error("请输入密码"));
-  } else {
-    callback();
-  }
-}
+  setup() {
+    const $api = inject('$api')
+    const router = useRouter()
 
-const validateUser = (rule, value, callback) => {
-  if (value === "") {
-    callback(new Error("请输入用户名"));
-  } else {
-    callback();
-  }
-}
+    const formState = reactive({
+      username: "",
+      password: "",
+    })
 
-const rules = reactive({
-  username: [{ validator: validateUser, trigger: "blur" }],
-  pwd: [{ validator: validatePwd, trigger: "blur" }],
-})
-
-const submit = (formEl) => {
-  if (!formEl) return
-  formEl.validate((valid) => {
-    if (valid) {
-      $api.login(ruleForm).then(res => {
+    const onFinish = (values) => {
+      $api.login(values).then(res => {
         sessionStorage.setItem('userInfo', JSON.stringify(res.data.data))
-        router.push('/home')
+        router.push('/welcome')
       })
-    } else {
-      return false
     }
-  });
-}
+
+    const disabled = computed(() => {
+      return !(formState.username && formState.password)
+    })
+    return {
+      formState,
+      onFinish,
+      disabled,
+    }
+  },
+})
 </script>
 
 <style scoped lang="scss">

@@ -5,16 +5,16 @@ import Welcome from '@/views/Welcome.vue'
 
 const routes = [
   {
-    name: 'login',
     path: '/login',
+    name: 'login',
     meta: {
       title: '登录页面'
     },
     component: Login
   },
   {
-    name: 'home',
     path: '/',
+    name: 'home',
     meta: {
       title: '首页'
     },

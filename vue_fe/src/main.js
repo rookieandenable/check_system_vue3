@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
-import ElementPlus from 'element-plus'
-import 'element-plus/dist/index.css'
 import api from './api'
+import Antd from 'ant-design-vue';
+import 'ant-design-vue/dist/antd.css';
 
 const app =createApp(App)
 
@@ -12,5 +12,5 @@ app.provide('$api', api)
 
 app
   .use(router)
-  .use(ElementPlus)
+  .use(Antd)
   .mount('#app')
