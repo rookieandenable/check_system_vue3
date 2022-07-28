@@ -2,6 +2,8 @@ import {createRouter, createWebHashHistory} from 'vue-router'
 import Login from '@/views/Login.vue'
 import Home from '@/views/Home.vue'
 import Welcome from '@/views/Welcome.vue'
+import UserManager from '@/views/UserManager.vue'
+import MenuManager from '@/views/MenuManager.vue'
 
 const routes = [
   {
@@ -28,6 +30,22 @@ const routes = [
           title: '欢迎页'
         },
         component: Welcome
+      },
+      {
+        name: 'userManager',
+        path: '/userManager',
+        meta: {
+          title: '用户管理'
+        },
+        component: UserManager
+      },
+      {
+        name: 'menuManager',
+        path: '/menuManager',
+        meta: {
+          title: '菜单管理'
+        },
+        component: MenuManager
       }
     ]
   }
