@@ -2,14 +2,8 @@
   <div class="menu-manager">
     <div class="header">
       <a-form layout="inline" :model="formState">
-        <a-form-item label="菜单名称">
-          <a-input v-model:value="formState.menuName" placeholder="请输入菜单名称" />
-        </a-form-item>
-        <a-form-item label="菜单状态">
-          <a-select v-model:value="formState.menuState" style="width: 180px" @change="handleSelect">
-            <a-select-option value="0">正常</a-select-option>
-            <a-select-option value="1">停用</a-select-option>
-          </a-select>
+        <a-form-item label="部门名称">
+          <a-input v-model:value="formState.deptName" placeholder="请输入部门名称" />
         </a-form-item>
         <a-form-item>
           <a-button type="primary" :style="{ marginRight: '10px' }" @click="queryBtn">查询</a-button>
@@ -29,70 +23,47 @@
 
 <script>
 import { defineComponent, getCurrentInstance, onMounted, reactive, ref, toRaw } from "vue"
+import dayjs from "dayjs";
 
 const columns = [
   {
-    title: "菜单名称",
-    dataIndex: "menuName",
+    title: "部门名称",
+    dataIndex: "deptName",
   },
   {
-    title: "图标",
-    dataIndex: "icon",
-  },
-  {
-    title: "菜单类型",
-    dataIndex: "menuType",
-    customRender: ({text}) => {
-      return {
-        '1': '菜单',
-        '2': '按钮'
-      }[text]
-    },
-  },
-  {
-    title: "权限标识",
-    dataIndex: "menuCode",
-  },
-  {
-    title: "路由地址",
-    dataIndex: "path",
-  },
-  {
-    title: "组件路径",
-    dataIndex: "component",
-  },
-  {
-    title: "菜单状态",
-    dataIndex: "menuState",
-    customRender: ({text}) => {
-      return {
-        '1': '正常',
-        '2': '停止'
-      }[text]
-    },
+    title: "负责人",
+    dataIndex: "userName",
   },
   {
     title: "创建时间",
     dataIndex: "createTime",
+    customRender: ({text}) => {
+      return dayjs(text).format('YYYY-MM-DD HH:mm:hh')
+    },
+  },
+  {
+    title: "更新时间",
+    dataIndex: "updateTime",
+    customRender: ({text}) => {
+      return dayjs(text).format('YYYY-MM-DD HH:mm:hh')
+    },
   },
 ];
 
 export default defineComponent({
-  name: 'MenuManager',
+  name: 'DeptManager',
   setup() {
     const { proxy } = getCurrentInstance()
     const listData = ref([])
     const formState = reactive({
-      menuName: '',
-      menuState: '0'
+      deptName: '',
     })
 
     const getListData = async () => {
       const params = {}
       const queryData = toRaw(formState)
-      if(queryData.menuName) params.menuName = queryData.menuName
-      if(queryData.menuState) params.menuState = Number(queryData.menuState)
-      const list = await proxy.$api.getMenuList(params)
+      if(queryData.deptName) params.deptName = queryData.deptName
+      const list = await proxy.$api.getDeptList(params)
       listData.value = list
     }
 
@@ -100,24 +71,18 @@ export default defineComponent({
       getListData()
     })
 
-    const handleSelect = (value) => {
-      formState.menuState = value
-    }
-
     const queryBtn = () => {
       getListData()
     }
 
     const resetBtn = () => {
-      formState.menuName = ''
-      formState.menuState = '0'
+      formState.deptName = ''
     }
 
     return {
       formState,
       listData,
       columns,
-      handleSelect,
       queryBtn,
       resetBtn,
     }

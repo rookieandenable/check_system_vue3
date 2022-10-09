@@ -4,6 +4,8 @@ import Home from '@/views/Home.vue'
 import Welcome from '@/views/Welcome.vue'
 import UserManager from '@/views/UserManager.vue'
 import MenuManager from '@/views/MenuManager.vue'
+import DeptManager from '@/views/DeptManager.vue'
+import RoleManager from '@/views/RoleManager.vue'
 
 const routes = [
   {
@@ -46,6 +48,22 @@ const routes = [
           title: '菜单管理'
         },
         component: MenuManager
+      },
+      {
+        name: 'deptManager',
+        path: '/deptManager',
+        meta: {
+          title: '部门管理'
+        },
+        component: DeptManager
+      },
+      {
+        name: 'roleManager',
+        path: '/roleManager',
+        meta: {
+          title: '角色管理'
+        },
+        component: RoleManager
       }
     ]
   }

@@ -8,11 +8,16 @@ import config from '@/config'
 
 const server = axios.create({
   baseURL: config.baseUrl,
-  timeout: 8000
+  timeout: 500000
 })
 
 // 请求信息拦截器
 server.interceptors.request.use((req) => {
+  const userInfo = sessionStorage.getItem('userInfo')
+  const token = userInfo && JSON.parse(userInfo).token
+  if (token) {
+    req.headers.Authorization = 'Bearer ' + token
+  }
   return req
 })
 
@@ -21,4 +26,14 @@ server.interceptors.response.use((res) => {
   return res
 })
 
-export default server
+/**
+ * 请求核心函数
+ */
+function request(options) {
+  if (options.method.toLowerCase() === 'get') {
+    options.params = options.data
+  }
+  return server(options)
+}
+
+export default request

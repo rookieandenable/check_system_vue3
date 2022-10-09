@@ -2,81 +2,50 @@
   <div class="login-wrapper">
     <div class="login-modal">
       <div class="header">权限管理系统</div>
-      <a-form
-        :model="formState"
-        name="horizontal_login"
-        autocomplete="off"
-        @finish="onFinish"
+      <el-form
+        :model="ruleForm"
+        label-width="120px"
       >
-        <a-form-item
-          label="用户名"
-          name="username"
-          :rules="[{ required: true, message: '请输入用户名!' }]"
-        >
-          <a-input v-model:value="formState.username">
-            <template #prefix>
-              <UserOutlined class="site-form-item-icon" />
-            </template>
-          </a-input>
-        </a-form-item>
-
-        <a-form-item
-          label="密码&#12288"
-          name="password"
-          :rules="[{ required: true, message: '请输入密码!' }]"
-        >
-          <a-input-password v-model:value="formState.password">
-            <template #prefix>
-              <LockOutlined class="site-form-item-icon" />
-            </template>
-          </a-input-password>
-        </a-form-item>
-
-        <a-form-item>
-          <a-button :disabled="disabled" type="primary" html-type="submit" class="btn">登录</a-button>
-        </a-form-item>
-      </a-form>
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="ruleForm.username" />
+        </el-form-item>
+        <el-form-item label="密码" prop="pwd">
+          <el-input v-model.number="ruleForm.pwd" type="password" />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onFinish" class="btn">登录</el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </div>
 </template>
 
-<script>
-import { defineComponent, reactive, computed, inject, ref } from "vue"
-import { UserOutlined, LockOutlined } from "@ant-design/icons-vue"
+<script setup>
+import { reactive } from "vue"
 import { useRouter } from "vue-router"
+import to from 'await-to-js'
+import api from '@/api'
 
-export default defineComponent({
-  components: {
-    UserOutlined,
-    LockOutlined,
-  },
-
-  setup() {
-    const $api = inject('$api')
-    const router = useRouter()
-
-    const formState = reactive({
-      username: "",
-      password: "",
-    })
-
-    const onFinish = (values) => {
-      $api.login(values).then(res => {
-        sessionStorage.setItem('userInfo', JSON.stringify(res.data.data))
-        router.push('/welcome')
-      })
-    }
-
-    const disabled = computed(() => {
-      return !(formState.username && formState.password)
-    })
-    return {
-      formState,
-      onFinish,
-      disabled,
-    }
-  },
+const router = useRouter()
+const ruleForm = reactive({
+  username: "",
+  pwd: "",
 })
+
+const onFinish = async() => {
+  const param = {
+    userName: ruleForm.username,
+    userPwd: ruleForm.pwd
+  }
+  const [err, res] = await to(api.login(param))
+  if (err || res?.data?.success === 1) {
+    ElMessage(`${res?.data?.msg || err?.message}`)
+    return
+  }
+  ElMessage.success(`${res?.data?.msg}`)
+  sessionStorage.setItem('userInfo', JSON.stringify(res.data.data))
+  router.push('/welcome')
+}
 </script>
 
 <style scoped lang="scss">

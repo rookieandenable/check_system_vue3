@@ -7,7 +7,7 @@ const env = 'dev'
 
 const base = {
   dev: {
-    baseUrl: 'https://www.fastmock.site/mock/a9750f8bc8cee98c397cb20cea270a7f/api'
+    baseUrl: '/api'
   },
   prop: {
     baseUrl: 'https://www.fastmock.site/mock/a9750f8bc8cee98c397cb20cea270a7f/api'
